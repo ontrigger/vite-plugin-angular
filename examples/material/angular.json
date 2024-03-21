@@ -1,0 +1,207 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "cli": {
+      "analytics": false,
+        "schematicCollections": [
+          "@angular-eslint/schematics"
+        ]
+    },
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "angular-electron": {
+            "root": "",
+            "sourceRoot": "src",
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:application": {
+                    "strict": false
+                },
+                "@schematics/angular:component": {
+                    "style": "scss"
+                }
+            },
+            "prefix": "inp",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser-esbuild",
+                    "options": {
+                        "outputPath": "dist",
+                        "index": "src/index.html",
+                        "main": "src/main.ts",
+                        "tsConfig": "src/tsconfig.app.json",
+                        "polyfills": "polyfills.ts",
+                        "inlineStyleLanguage": "scss",
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/assets"
+                        ],
+                        "styles": [
+                            "node_modules/simple-keyboard/build/css/index.css",
+                            "src/styles.scss",
+                            {
+                                "input": "src/styles/themes/high-contrast.scss",
+                                "bundleName": "high-contrast",
+                                "inject": false
+                            },
+                            {
+                                "input": "src/styles/themes/light.scss",
+                                "bundleName": "light",
+                                "inject": false
+                            },
+                            {
+                                "input": "src/styles/themes/indoors.scss",
+                                "bundleName": "indoors",
+                                "inject": false
+                            }
+                        ],
+                        "stylePreprocessorOptions": {
+                            "includePaths": ["."]
+                        },
+                        "scripts": []
+                    },
+                    "configurations": {
+                        "dev-base": {
+                            "optimization": false,
+                            "outputHashing": "none",
+                            "sourceMap": true,
+                            "namedChunks": false,
+                            "aot": false,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": false
+                        },
+                        "prod-base": {
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true
+                        },
+                        "dev-rzd": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.rzd.dev.ts"
+                                }
+                            ]
+                        },
+                        "dev-indoors": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.indoors.dev.ts"
+                                }
+                            ]
+                        },
+                        "prod-rzd": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.rzd.prod.ts"
+                                }
+                            ]
+                        },
+                        "prod-indoors": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.indoors.prod.ts"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "angular-electron:build"
+                    },
+                    "configurations": {
+                        "dev-base": {
+                            "hmr": true,
+                            "browserTarget": "angular-electron:build:dev-base"
+                        },
+                        "prod-base": {
+                            "browserTarget": "angular-electron:build:prod-base"
+                        },
+                        "dev-rzd": {
+                            "browserTarget": "angular-electron:build:dev-base,dev-rzd"
+                        },
+                        "dev-indoors": {
+                            "browserTarget": "angular-electron:build:dev-base,dev-indoors"
+                        },
+                        "prod-rzd": {
+                            "browserTarget": "angular-electron:build:prod-base,prod-rzd"
+                        },
+                        "prod-indoors": {
+                            "browserTarget": "angular-electron:build:prod-base,prod-indoors"
+                        }
+                    }
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "angular-electron:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-builders/custom-webpack:karma",
+                    "options": {
+                        "main": "src/test.ts",
+                        "polyfills": "src/polyfills-test.ts",
+                        "tsConfig": "src/tsconfig.spec.json",
+                        "karmaConfig": "src/karma.conf.js",
+                        "inlineStyleLanguage": "scss",
+                        "scripts": [],
+                        "styles": [
+                            "src/styles.scss"
+                        ],
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/assets"
+                        ],
+                        "customWebpackConfig": {
+                            "path": "./angular.webpack.js",
+                            "replaceDuplicatePlugins": true
+                        }
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "src/**/*.ts",
+                            "src/**/*.html"
+                        ]
+                    }
+                }
+            }
+        },
+        "angular-electron-e2e": {
+            "root": "e2e",
+            "projectType": "application",
+            "architect": {
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "e2e/**/*.ts"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "schematics": {
+        "@angular-eslint/schematics:application": {
+            "setParserOptionsProject": true
+        },
+        "@angular-eslint/schematics:library": {
+            "setParserOptionsProject": true
+        }
+    }
+}
